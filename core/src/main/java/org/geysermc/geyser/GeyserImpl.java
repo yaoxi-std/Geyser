@@ -29,6 +29,8 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.steveice10.mc.auth.exception.request.RequestException;
+import com.github.steveice10.mc.auth.service.ServiceRoot;
 import com.github.steveice10.packetlib.tcp.TcpSession;
 import com.nukkitx.network.raknet.RakNetConstants;
 import com.nukkitx.network.util.EventLoops;
@@ -217,7 +219,13 @@ public class GeyserImpl implements GeyserApi {
             StringBuilder rootUriBuilder = new StringBuilder(rootUri);
             if (!rootUri.endsWith("/"))
                 rootUriBuilder.append("/");
-            ServiceRoot.registerYggdrasilServiceRoot(URI.create(rootUriBuilder.toString()));
+            try {
+                ServiceRoot.registerYggdrasilServiceRoot(URI.create(rootUriBuilder.toString()));
+                logger.info("Yggdrasil API root set to " + rootUriBuilder);
+            } catch (RequestException e) {
+                logger.error("Unable to resolve Yggdrasil API root " + rootUriBuilder);
+                e.printStackTrace();
+            }
         }
 
         if (platformType != PlatformType.STANDALONE && config.getRemote().getAddress().equals("auto")) {

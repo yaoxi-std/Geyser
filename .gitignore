@@ -246,3 +246,6 @@ locales/
 /dump.json
 /saved-refresh-tokens.json
 /languages/
+
+### macOS ###
+**/.DS_Store
